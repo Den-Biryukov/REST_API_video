@@ -78,7 +78,8 @@ class CommentAPIView(APIView):
         # )
         # return Response({'post': CommentSerializer(post_new).data})
         return Response({'post': serializer.data})
-        '''model_to_dict(post_new) было вместо CommentSerializer(post_new).data -
+        '''model_to_dict(post_new) было вместо CommentSerializer(post_new).data,
+         которое было вместо serializer.data :) -
         стандартная джанговская функция, 
         преобразовывает объект класса Video в словарь'''
 # ---------------------

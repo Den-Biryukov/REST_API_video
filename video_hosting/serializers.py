@@ -38,3 +38,25 @@ class CommentSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         return Comment.objects.create(**validated_data)
+
+
+
+# этот сериализатор сделали на занятии от 04.05.2022 (lesson_27)
+class CommentsSerializer(serializers.ModelSerializer):
+    video = VideoSerializer(many=False)
+
+    class Meta:
+        fields = ('id', 'owner', 'video', 'content', 'likes_count')
+        model = Comment
+
+
+class HashTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('__all__') # все поля
+        model = HashTag
+
+
+class VideoRecommendationSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('id', 'videos', 'recommendation_name', 'is_top_rated')
+        model = VideoRecommendation

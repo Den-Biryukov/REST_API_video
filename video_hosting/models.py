@@ -21,3 +21,14 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.name} -- {self.id}'
+
+
+class HashTag(models.Model):
+    video = models.ForeignKey(Video, on_delete=models.CASCADE, blank=True, null=True, related_name='hashtag')
+    tag = models.CharField(max_length=255, default='#')
+
+
+class VideoRecommendation(models.Model):
+    videos = models.ManyToManyField(Video, blank=True, null=True, related_name='recommendation')
+    recommendation_name = models.CharField(max_length=255, default='')
+    is_top_rated = models.BooleanField()
