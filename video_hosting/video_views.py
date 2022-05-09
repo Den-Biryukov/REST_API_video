@@ -66,20 +66,11 @@ class VideoSpecificAPIView(APIView):
         return Response({'videos': VideoSerializer(video, many=True).data})
 
 
-#TODO: хм, что-то не получилось, попробую вернуться к этому позже, или спрошу у Антона
-class CommentAPIView(APIView):
-    def post(self, request):
-        serializer = CommentSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        # post_new = Comment.objects.create(
-        #     video=request.data['video'],
-        #     content=request.data['content']
-        # )
-        # return Response({'post': CommentSerializer(post_new).data})
-        return Response({'post': serializer.data})
-        '''model_to_dict(post_new) было вместо CommentSerializer(post_new).data,
-         которое было вместо serializer.data :) -
-        стандартная джанговская функция, 
-        преобразовывает объект класса Video в словарь'''
-# ---------------------
+class VideoListCreateView(generics.ListCreateAPIView):
+    serializer_class = VideoMoreSimplySerializer
+    queryset = Video.objects.all()
+
+
+class VideoListRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = VideoMoreSimplySerializer
+    queryset = Video.objects.all()

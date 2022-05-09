@@ -29,21 +29,9 @@ class VideoSerializer(serializers.Serializer):
         return instance
 
 
-
-class CommentSerializer(serializers.Serializer):
-    owner = serializers.CharField(allow_blank=True, allow_null=True, read_only=True)
-    video = serializers.CharField()
-    content = serializers.CharField
-    likes_count = serializers.IntegerField(default=0)
-
-    def create(self, validated_data):
-        return Comment.objects.create(**validated_data)
-
-
-
 # этот сериализатор сделали на занятии от 04.05.2022 (lesson_27)
 class CommentsSerializer(serializers.ModelSerializer):
-    video = VideoSerializer(many=False)
+    # video = VideoSerializer(many=False)
 
     class Meta:
         fields = ('id', 'owner', 'video', 'content', 'likes_count')
@@ -60,3 +48,9 @@ class VideoRecommendationSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('id', 'videos', 'recommendation_name', 'is_top_rated')
         model = VideoRecommendation
+
+
+class VideoMoreSimplySerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('__all__') # все поля
+        model = Video
