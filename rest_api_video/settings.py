@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+import os
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,7 +21,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ':)'
+# SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = 'django-insecure-pj$qqhy!y!a-1w=hnl1tf&t-3wgkbp%-=+$qzfd$_0!m1!(+no'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -41,12 +43,18 @@ INSTALLED_APPS = [
     # вот это под вопросом, возможно надо так:
     # 'video-hosting'
     'video_hosting.apps.VideoHostingConfig',
+    'djoser',
+    'corsheaders',
+    'rest_framework_simplejwt',
+    'rest_framework_swagger',
+    'django_celery_beat',
     #-----
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -55,6 +63,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'rest_api_video.urls'
+
+AUTH_USER_MODEL = 'video_hosting.User'
 
 TEMPLATES = [
     {
@@ -122,8 +132,70 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
+MEDIA_URL ='/media/'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# lesson 28 18.05.2022 JWT:
+# EMAIL CONFIG
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_HOST = "localhost"
+# EMAIL_PORT = "1025"
+EMAIL_HOST_USER = ""
+EMAIL_HOST_PASSWORD = ""
+# EMAIL_USE_TLS = False
+# DEFAULT_FROM_EMAIL = 'den-biryukov-2016@mail.ru'
+
+# lesson 28 18.05.2022 JWT:
+REST_FRAMEWORK = {
+    # "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    # swagger
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    # swagger
+}
+
+# lesson 28 18.05.2022 JWT:
+SIMPLE_JWT = {
+    "AUTH_HEADER_TYPES": ("JWT",),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+
+}
+
+
+# lesson 28 18.05.2022 JWT:
+# DJOSER CONFIG
+DJOSER = {
+    "LOGIN_FIELD": "email",
+    # "SEND_CONFIRMATION_EMAIL": True,
+    "PASSWORD_RESET_CONFIRM_URL": "email/reset/confirm/{uid}/{token}",
+    "ACTIVATION_URL": "activate/{uid}/{token}",
+    # "SEND_ACTIVATION_EMAIL": True,
+    "SERIALIZERS": {
+        "user_create": "video_hosting.serializers.UserCreateSerializer",  # custom serializer
+        "user": "djoser.serializers.UserSerializer",
+        "current_user": "djoser.serializers.UserSerializer",
+        "user_delete": "djoser.serializers.UserSerializer",
+    },
+}
+
+# lesson 23.05.2022
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = 'den-biryukov-2016@mail.ru'
+EMAIL_USE_TLS = False
+EMAIL_HOST = "localhost"
+EMAIL_PORT = "1025"
+#/ lesson 23.05.2022
+
+# lesson_32  01.06.2022
+CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
+CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/0"
+#/ lesson_32  01.06.2022

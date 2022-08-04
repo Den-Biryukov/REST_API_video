@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 from rest_framework import generics
 
 from rest_framework.views import APIView
@@ -21,6 +24,9 @@ from .serializers import *
 # что-то получилось, добавил часть из 4 видео, что-то получилось, добавил часть из 5 видео:
 
 class VideoAPIView(APIView):
+
+    @method_decorator(cache_page(60 * 2))
+    @method_decorator(vary_on_cookie)
     def get(self, request):
         videos = Video.objects.all()
         '''если рабоатем без сериалайзера и в Responce используем 
@@ -58,6 +64,9 @@ class VideoAPIView(APIView):
     # помиомо get и post запроссов, есть ещё put, patch, delete, и, думаю, это не все
 
 class VideoSpecificAPIView(APIView):
+
+    @method_decorator(cache_page(60 * 2))
+    @method_decorator(vary_on_cookie)
     def get(self, request, pk):
         video = Video.objects.filter(id=pk)
         '''если рабоатем без сериалайзера и в Responce используем 
